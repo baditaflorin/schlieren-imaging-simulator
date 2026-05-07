@@ -26,6 +26,8 @@ import {
   Volume2,
   Wind,
 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { z } from "zod";
 import { useAudioMeter } from "./features/audio/useAudioMeter";
 import {
   defaultSettings,
@@ -54,6 +56,26 @@ const scenarioIcons = {
   sound: Radio,
   gas: Wind,
 };
+
+const commitSchema = z.object({
+  sha: z.string().min(7),
+});
+
+async function fetchMainCommit() {
+  const response = await fetch(
+    "https://api.github.com/repos/baditaflorin/schlieren-imaging-simulator/commits/main",
+    {
+      headers: {
+        Accept: "application/vnd.github+json",
+      },
+    },
+  );
+  if (!response.ok) {
+    throw new Error("Commit lookup failed");
+  }
+  const parsed = commitSchema.parse(await response.json());
+  return parsed.sha.slice(0, 7);
+}
 
 function percent(value: number) {
   return `${Math.round(value * 100)}%`;
@@ -90,6 +112,11 @@ function App() {
   );
   const [telemetry, setTelemetry] = useState<SolverTelemetry>(initialTelemetry);
   const audio = useAudioMeter();
+  const commitQuery = useQuery({
+    queryKey: ["github-main-commit"],
+    queryFn: fetchMainCommit,
+  });
+  const displayedCommit = commitQuery.data ?? __BUILD_COMMIT__;
 
   useEffect(() => {
     saveSettings(settings);
@@ -185,7 +212,7 @@ function App() {
             <span>{Math.round(telemetry.fps)} FPS</span>
             <span>{telemetry.grid}</span>
             <span>v{__APP_VERSION__}</span>
-            <span>commit {__BUILD_COMMIT__}</span>
+            <span>commit {displayedCommit}</span>
           </div>
         </section>
 
@@ -340,6 +367,8 @@ function App() {
             <div className="readout-grid">
               <span>Build date</span>
               <strong>{new Date(__BUILD_DATE__).toLocaleDateString()}</strong>
+              <span>Main commit</span>
+              <strong>{displayedCommit}</strong>
               <span>Repository</span>
               <a href={__REPO_URL__} target="_blank" rel="noreferrer">
                 baditaflorin

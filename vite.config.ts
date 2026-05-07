@@ -1,5 +1,4 @@
 import react from "@vitejs/plugin-react";
-import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
@@ -9,16 +8,6 @@ const pkg = JSON.parse(
 ) as {
   version: string;
 };
-
-function git(command: string, fallback: string) {
-  try {
-    return execSync(command, { stdio: ["ignore", "pipe", "ignore"] })
-      .toString()
-      .trim();
-  } catch {
-    return fallback;
-  }
-}
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -37,8 +26,10 @@ export default defineConfig({
   },
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
-    __BUILD_COMMIT__: JSON.stringify(git("git rev-parse --short HEAD", "dev")),
-    __BUILD_DATE__: JSON.stringify(new Date().toISOString()),
+    __BUILD_COMMIT__: JSON.stringify(process.env.BUILD_COMMIT ?? "public-main"),
+    __BUILD_DATE__: JSON.stringify(
+      process.env.BUILD_DATE ?? "2026-05-08T00:00:00.000Z",
+    ),
     __REPO_URL__: JSON.stringify(
       "https://github.com/baditaflorin/schlieren-imaging-simulator",
     ),
