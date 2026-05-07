@@ -57,24 +57,17 @@ const scenarioIcons = {
   gas: Wind,
 };
 
-const commitSchema = z.object({
-  sha: z.string().min(7),
+const buildInfoSchema = z.object({
+  commit: z.string().min(7),
+  version: z.string().min(1),
 });
 
-async function fetchMainCommit() {
-  const response = await fetch(
-    "https://api.github.com/repos/baditaflorin/schlieren-imaging-simulator/commits/main",
-    {
-      headers: {
-        Accept: "application/vnd.github+json",
-      },
-    },
-  );
+async function fetchBuildInfo() {
+  const response = await fetch(`${import.meta.env.BASE_URL}build-info.json`);
   if (!response.ok) {
-    throw new Error("Commit lookup failed");
+    throw new Error("Build metadata lookup failed");
   }
-  const parsed = commitSchema.parse(await response.json());
-  return parsed.sha.slice(0, 7);
+  return buildInfoSchema.parse(await response.json());
 }
 
 function percent(value: number) {
@@ -112,11 +105,12 @@ function App() {
   );
   const [telemetry, setTelemetry] = useState<SolverTelemetry>(initialTelemetry);
   const audio = useAudioMeter();
-  const commitQuery = useQuery({
-    queryKey: ["github-main-commit"],
-    queryFn: fetchMainCommit,
+  const buildInfoQuery = useQuery({
+    queryKey: ["build-info"],
+    queryFn: fetchBuildInfo,
   });
-  const displayedCommit = commitQuery.data ?? __BUILD_COMMIT__;
+  const displayedCommit = buildInfoQuery.data?.commit ?? __BUILD_COMMIT__;
+  const displayedVersion = buildInfoQuery.data?.version ?? __APP_VERSION__;
 
   useEffect(() => {
     saveSettings(settings);
@@ -211,7 +205,7 @@ function App() {
             </span>
             <span>{Math.round(telemetry.fps)} FPS</span>
             <span>{telemetry.grid}</span>
-            <span>v{__APP_VERSION__}</span>
+            <span>v{displayedVersion}</span>
             <span>commit {displayedCommit}</span>
           </div>
         </section>
@@ -367,7 +361,7 @@ function App() {
             <div className="readout-grid">
               <span>Build date</span>
               <strong>{new Date(__BUILD_DATE__).toLocaleDateString()}</strong>
-              <span>Main commit</span>
+              <span>Build commit</span>
               <strong>{displayedCommit}</strong>
               <span>Repository</span>
               <a href={__REPO_URL__} target="_blank" rel="noreferrer">

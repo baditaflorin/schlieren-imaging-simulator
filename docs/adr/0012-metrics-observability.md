@@ -10,7 +10,7 @@ Mode A has no server metrics endpoint. Privacy matters for an educational public
 
 ## Decision
 
-Ship no analytics in v1. Surface local observability only: FPS, active solver path, grid size, audio level, app version, and the public main commit from GitHub metadata.
+Ship no analytics in v1. Surface local observability only: FPS, active solver path, grid size, audio level, app version, and the static build commit.
 
 ## Consequences
 

@@ -26,7 +26,7 @@ export default defineConfig({
   },
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
-    __BUILD_COMMIT__: JSON.stringify(process.env.BUILD_COMMIT ?? "public-main"),
+    __BUILD_COMMIT__: JSON.stringify(process.env.BUILD_COMMIT ?? "8fc81f2"),
     __BUILD_DATE__: JSON.stringify(
       process.env.BUILD_DATE ?? "2026-05-08T00:00:00.000Z",
     ),

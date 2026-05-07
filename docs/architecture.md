@@ -9,9 +9,7 @@ C4Context
   System_Boundary(pages, "GitHub Pages") {
     System(app, "Static simulator", "React, TypeScript, WebGPU, Three.js, Web Audio")
   }
-  System_Ext(github, "GitHub public API", "Latest main commit lookup")
   Rel(user, app, "Uses in browser")
-  Rel(app, github, "Fetches public commit metadata")
 ```
 
 ## Container
@@ -26,14 +24,14 @@ C4Container
     Container(render, "Schlieren renderer", "Three.js/WebGL", "Synthetic optical bench and gradient visualization")
     Container(audio, "Audio analyzer", "Web Audio", "Microphone and uploaded audio levels")
     Container(storage, "Settings storage", "localStorage + zod", "Validated local preferences")
+    Container(build, "Build metadata", "Static JSON", "Version and commit")
   }
-  System_Ext(github, "GitHub public API")
   Rel(user, ui, "Interacts")
   Rel(ui, sim, "Sends scene parameters")
   Rel(audio, sim, "Modulates density")
   Rel(sim, render, "Provides density texture")
   Rel(ui, storage, "Persists settings")
-  Rel(ui, github, "Reads latest commit")
+  Rel(ui, build, "Reads build metadata")
 ```
 
 ## Boundaries

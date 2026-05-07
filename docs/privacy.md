@@ -18,8 +18,8 @@ Microphone audio is analyzed locally with Web Audio. Uploaded audio files are pl
 
 ## Network Requests
 
-The app requests public commit metadata from:
+The app fetches same-origin static build metadata from:
 
-https://api.github.com/repos/baditaflorin/schlieren-imaging-simulator/commits/main
+https://baditaflorin.github.io/schlieren-imaging-simulator/build-info.json
 
-This is used only to display the current repository commit on the page.
+This is used only to display the published version and build commit on the page.

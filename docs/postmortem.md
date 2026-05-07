@@ -8,7 +8,7 @@ V1 is a static GitHub Pages Schlieren imaging simulator with:
 - WebGPU compute-shader density generation with CPU fallback.
 - Three.js/WebGL Schlieren-style rendering on a synthetic optical bench.
 - Web Audio microphone and uploaded-audio modulation.
-- Version, public main commit, repository, and PayPal links in the UI.
+- Version, build commit, repository, and PayPal links in the UI.
 - PWA manifest, local settings persistence, local hooks, unit tests, and desktop/mobile Playwright smoke tests.
 
 ## Was Mode A Correct?
@@ -25,7 +25,7 @@ Yes. The core experience does not need auth, secrets, a database, or a runtime A
 ## What Did Not Work
 
 - Building into `docs/` initially erased ADR markdown. The build cleaner now removes only generated Pages assets.
-- Injecting git commit and build date into the bundle made repeated builds dirty. The UI now fetches the public main commit at runtime with a stable fallback.
+- Injecting git commit and build date into the bundle made repeated builds dirty. The UI now reads same-origin static build metadata with a stable fallback.
 
 ## Surprises
 

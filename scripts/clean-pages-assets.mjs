@@ -6,6 +6,7 @@ const outDir = join(process.cwd(), "docs");
 const generatedEntries = [
   "404.html",
   "assets",
+  "build-info.json",
   "favicon.svg",
   "icons.svg",
   "index.html",
