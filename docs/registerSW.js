@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/schlieren-imaging-simulator/sw.js', { scope: '/schlieren-imaging-simulator/' })})}
