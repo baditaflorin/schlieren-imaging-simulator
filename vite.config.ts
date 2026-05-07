@@ -25,8 +25,8 @@ export default defineConfig({
   base: "/schlieren-imaging-simulator/",
   build: {
     outDir: "docs",
-    emptyOutDir: true,
-    sourcemap: true,
+    emptyOutDir: false,
+    sourcemap: false,
     rollupOptions: {
       output: {
         assetFileNames: "assets/[name]-[hash][extname]",
