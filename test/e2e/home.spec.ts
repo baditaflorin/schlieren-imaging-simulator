@@ -9,7 +9,7 @@ test("loads the simulator and renders a nonblank canvas", async ({ page }) => {
     "href",
     "https://github.com/baditaflorin/schlieren-imaging-simulator",
   );
-  await expect(page.getByText(/commit/i)).toBeVisible();
+  await expect(page.getByText(/^commit /i)).toBeVisible();
 
   await page.getByRole("tab", { name: /sound wave/i }).click();
   const canvas = page.locator("canvas");
