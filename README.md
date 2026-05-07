@@ -4,6 +4,8 @@
 
 Browser-based Schlieren simulator for visualizing heat, sound, and gas density gradients with WebGPU and Three.js.
 
+![Schlieren simulator screenshot](docs/demo-screenshot.png)
+
 ## Quickstart
 
 ```sh

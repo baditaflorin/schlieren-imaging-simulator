@@ -10,7 +10,7 @@ Mode A has no external data pipeline. V1 presets are small and deterministic.
 
 ## Decision
 
-Scene presets are versioned TypeScript objects bundled with the app. Optional offline audio feature files may be generated as JSON by the `tools/librosa/` helper, but no such artifact is required for runtime.
+Scene presets are versioned TypeScript objects bundled with the app. Optional offline audio feature files may be generated as JSON by the `tools/librosa/` helper, but no such artifact is required for runtime. The app may fetch public GitHub commit metadata directly from the browser to display the current main commit; this is not a private or generated data source.
 
 ## Consequences
 

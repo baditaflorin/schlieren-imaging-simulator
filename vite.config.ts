@@ -65,6 +65,7 @@ export default defineConfig({
       workbox: {
         navigateFallback: "/schlieren-imaging-simulator/index.html",
         globPatterns: ["**/*.{js,css,html,svg,png,wasm,json}"],
+        globIgnores: ["**/demo-screenshot.png"],
       },
     }),
   ],
