@@ -26,6 +26,24 @@ export const scenarioPresets: ScenarioPreset[] = [
     sourceLabel: "Nozzle leak",
     reading: "Jet diffusion",
   },
+  {
+    id: "shock",
+    label: "Mach shockwave",
+    sourceLabel: "Supersonic projectile",
+    reading: "Conical shock + wake",
+  },
+  {
+    id: "breath",
+    label: "Exhaled breath",
+    sourceLabel: "Mouth puff",
+    reading: "Warm humid jet",
+  },
+  {
+    id: "convection",
+    label: "Rayleigh–Bénard cells",
+    sourceLabel: "Heated plate",
+    reading: "Stacked convection rolls",
+  },
 ];
 
 export const defaultSettings: SimulationSettings = {

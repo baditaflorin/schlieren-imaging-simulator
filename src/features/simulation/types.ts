@@ -1,4 +1,10 @@
-export type ScenarioId = "heat" | "sound" | "gas";
+export type ScenarioId =
+  | "heat"
+  | "sound"
+  | "gas"
+  | "shock"
+  | "breath"
+  | "convection";
 
 export type SolverKind = "webgpu" | "cpu";
 

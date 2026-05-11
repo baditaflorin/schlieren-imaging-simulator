@@ -60,13 +60,57 @@ fn fieldAt(pos: vec2<f32>) -> f32 {
     return clamp((wave + reflected + roomMode) * envelope * strength, -1.0, 1.0);
   }
 
-  let streamX = saturate((x + 0.92) / 1.86);
-  let active = smoothstep(-0.94, -0.78, x);
-  let centerline = -0.18 + sin(streamX * 6.0 - params.time * (1.4 + params.flow * 3.4)) * (0.08 + turbulence * 0.08);
-  let spread = 0.025 + streamX * (0.18 + params.flow * 0.16);
-  let jet = gaussian(y - centerline, spread) * exp(-streamX * (1.05 - params.flow * 0.35)) * active;
-  let pockets = (hash2(floor((x + params.time * 0.15) * 18.0), floor(y * 22.0), params.time) - 0.5) * 0.22;
-  return clamp((jet + pockets * jet * turbulence) * strength, -1.0, 1.0);
+  if (params.scenario < 2.5) {
+    let streamX = saturate((x + 0.92) / 1.86);
+    let active = smoothstep(-0.94, -0.78, x);
+    let centerline = -0.18 + sin(streamX * 6.0 - params.time * (1.4 + params.flow * 3.4)) * (0.08 + turbulence * 0.08);
+    let spread = 0.025 + streamX * (0.18 + params.flow * 0.16);
+    let jet = gaussian(y - centerline, spread) * exp(-streamX * (1.05 - params.flow * 0.35)) * active;
+    let pockets = (hash2(floor((x + params.time * 0.15) * 18.0), floor(y * 22.0), params.time) - 0.5) * 0.22;
+    return clamp((jet + pockets * jet * turbulence) * strength, -1.0, 1.0);
+  }
+
+  if (params.scenario < 3.5) {
+    // Shock: Mach cone tracking a moving tip.
+    let machNumber = 1.2 + params.frequency * 2.8;
+    let machAngle = asin(min(0.999, 1.0 / machNumber));
+    let tipX = -0.85 + ((params.time * (0.35 + params.flow * 0.55)) - floor((params.time * (0.35 + params.flow * 0.55)) / 1.7) * 1.7);
+    let dx = x - tipX;
+    if (dx > 0.0) {
+      let wake = gaussian(y, 0.05 + dx * 0.22) * exp(-dx * 1.7);
+      let shimmer = sin(x * 28.0 + params.time * 5.2) * cos(y * 12.0 + params.time * 3.1) * turbulence * 0.4 * exp(-dx * 1.2);
+      return clamp((-wake + shimmer) * strength * 0.9, -1.0, 1.0);
+    }
+    let radial = abs(y);
+    let expectedRadial = -dx * tan(machAngle);
+    let shockJump = gaussian(radial - expectedRadial, 0.025 + turbulence * 0.02);
+    let muzzleFlash = gaussian(dx, 0.06) * gaussian(radial, 0.04) * 0.8;
+    return clamp((shockJump * 1.3 + muzzleFlash) * strength, -1.0, 1.0);
+  }
+
+  if (params.scenario < 4.5) {
+    // Breath: pulsed warm humid jet emerging from a fixed source.
+    let phasePeriod = 0.4 + params.frequency * 1.4;
+    let phase = (params.time * phasePeriod) - floor(params.time * phasePeriod);
+    let breathStrength = max(0.0, sin(phase * 3.14159265));
+    let sourceX = -0.78;
+    let sourceY = 0.12;
+    let advanceX = (x - sourceX) - phase * (0.45 + params.flow * 0.85);
+    let rise = -(y - sourceY) - phase * 0.18;
+    let jetCore = gaussian(advanceX, 0.06 + phase * 0.32) * gaussian(rise, 0.05 + phase * 0.22) * breathStrength;
+    let swirl = sin((x - sourceX) * 14.0 - params.time * 3.4) * cos((y - sourceY) * 11.0 + params.time * 2.7) * turbulence * 0.35 * jetCore;
+    let ambient = (audioLift * 0.15 + breathStrength * 0.05) * gaussian(x - sourceX, 0.18) * gaussian(y - sourceY, 0.14);
+    return clamp((jetCore + swirl + ambient) * strength, -1.0, 1.0);
+  }
+
+  // Convection: counter-rotating Rayleigh–Bénard cells above a hot plate.
+  let wavelength = 0.45 + (1.0 - params.flow) * 0.55;
+  let cellsX = 6.28318530718 / max(0.1, wavelength);
+  let lift = 1.0 - smoothstep(-0.95, 0.95, y);
+  let rolls = sin(x * cellsX + params.time * 0.6) * cos(y * cellsX * 0.7 + params.time * 0.4) * lift;
+  let wobble = sin(x * cellsX * 3.1 - params.time * 1.9) * turbulence * 0.25 * lift;
+  let floorHeat = gaussian(y - 0.85, 0.12) * 0.4;
+  return clamp((rolls + wobble + floorHeat) * strength, -1.0, 1.0);
 }
 
 @compute @workgroup_size(8, 8)

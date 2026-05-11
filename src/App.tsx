@@ -14,6 +14,7 @@ import {
   Flame,
   Gauge,
   HeartHandshake,
+  Layers,
   Mic,
   Pause,
   Play,
@@ -22,9 +23,11 @@ import {
   SlidersHorizontal,
   Square,
   Star,
+  Triangle,
   Upload,
   Volume2,
   Wind,
+  Zap,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
@@ -51,10 +54,13 @@ const initialTelemetry: SolverTelemetry = {
   webgpuMessage: "Initializing solver.",
 };
 
-const scenarioIcons = {
+const scenarioIcons: Record<ScenarioId, typeof Flame> = {
   heat: Flame,
   sound: Radio,
   gas: Wind,
+  shock: Zap,
+  breath: Triangle,
+  convection: Layers,
 };
 
 const buildInfoSchema = z.object({
